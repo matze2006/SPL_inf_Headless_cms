@@ -1,33 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
 import './App.css'
+import Card from './components/Card'
+
+type Person = {
+  id: number;
+  firstname: string;
+  lastname: string;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [person, setPerson] = useState<Person[]>([]);
+
+  useEffect(() => {
+    fetch("https://fakerapi.it/api/v2/persons?_quantity=10").then(
+      (res) => res.json().then(data => {
+        setPerson(data.data);
+      })
+    );
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+     <div className="bg-blue-300 min-h-screen pb-15">
+      <h1 className="text-4xl font-bold text-right p-4 mb-8 text-white">HTL Dornbirn 5bWi</h1>
+
+      <div className="grid sm:gap-x-5 md:gap-x-10 lg:gap-x-15 sm:gap-y-5 md:gap-y-7.5 lg:gap-y-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 px-30">
+        {person.map((p) => (
+          <Card
+            key={p.id}
+            person={p}
+          />
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    </div>
     </>
   )
 }
